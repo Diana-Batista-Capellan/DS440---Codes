@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Music Recommendation System</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Music Recommendation System</h1>
+        <label for="genre">Select a Genre:</label>
+        <select id="genre">
+            <option value="rock">Rock</option>
+            <option value="pop">Pop</option>
+            <option value="jazz">Jazz</option>
+            <option value="classical">Classical</option>
+            <option value="hiphop">Hip-Hop</option>
+        </select>
+        <button onclick="getRecommendation()">Get Recommendation</button>
+        <div id="recommendation"></div>
+    </div>
+    
+    <script>
+        function getRecommendation() {
+            const genre = document.getElementById("genre").value;
+            const recommendations = {
+                rock: ["Bohemian Rhapsody - Queen", "Stairway to Heaven - Led Zeppelin", "Hotel California - Eagles"],
+                pop: ["Blinding Lights - The Weeknd", "Shape of You - Ed Sheeran", "Levitating - Dua Lipa"],
+                jazz: ["Take Five - Dave Brubeck", "So What - Miles Davis", "Feeling Good - Nina Simone"],
+                classical: ["Moonlight Sonata - Beethoven", "Clair de Lune - Debussy", "Canon in D - Pachelbel"],
+                hiphop: ["Sicko Mode - Travis Scott", "God's Plan - Drake", "Lose Yourself - Eminem"]
+            };
+            
+            const recommendationDiv = document.getElementById("recommendation");
+            recommendationDiv.innerHTML = "<h2>Recommended Songs:</h2><ul>" + 
+                recommendations[genre].map(song => `<li>${song}</li>`).join('') + 
+                "</ul>";
+        }
+    </script>
+</body>
+</html>
