@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Music Recommendation System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #5d79f4, #b88de3);
+            color: white;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background: rgba(12, 12, 12, 0.9);
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.4);
+            width: 400px;
+            transition: transform 0.3s;
+        }
+        .container:hover {
+            transform: scale(1.02);
+        }
+        h1 {
+            font-size: 26px;
+            margin-bottom: 15px;
+        }
+        select, button {
+            margin-top: 12px;
+            padding: 12px;
+            width: 100%;
+            border-radius: 6px;
+            border: none;
+            font-size: 16px;
+        }
+        button {
+            background: #ff4081;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        button:hover {
+            background: #e0356f;
+        }
+        ul {
+            list-style: none;
+            padding: 0;
+            margin-top: 15px;
+        }
+        li {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 8px;
+            margin: 6px 0;
+            border-radius: 6px;
+        }
+        .fade-in {
+            animation: fadeIn 0.6s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Music Recommendation System</h1>
+        <label for="genre">Select a Genre:</label>
+        <select id="genre"></select>
+        <button onclick="getRecommendation()">Get Recommendation</button>
+        <div id="recommendation"></div>
+    </div>
+    
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const genreDropdown = document.getElementById("genre");
+
+            // Expanded Genre List
+            const genres = {
+                rock: ["Bohemian Rhapsody - Queen", "Hotel California - Eagles", "Back in Black - AC/DC"],
+                pop: ["Shape of You - Ed Sheeran", "Uptown Funk - Bruno Mars", "As It Was - Harry Styles"],
+                jazz: ["Take Five - Dave Brubeck", "Feeling Good - Nina Simone", "Fly Me to the Moon - Frank Sinatra"],
+                classical: ["Clair de Lune - Debussy", "Symphony No. 5 - Beethoven", "The Four Seasons - Vivaldi"],
+                hiphop: ["God's Plan - Drake", "HUMBLE. - Kendrick Lamar", "Sicko Mode - Travis Scott"],
+                electronic: ["Strobe - Deadmau5", "Titanium - David Guetta", "Animals - Martin Garrix"],
+                blues: ["The Thrill Is Gone - B.B. King", "Sweet Home Chicago - Robert Johnson", "Stormy Monday - T-Bone Walker"],
+                country: ["Jolene - Dolly Parton", "Take Me Home, Country Roads - John Denver", "Tennessee Whiskey - Chris Stapleton"],
+                reggae: ["No Woman, No Cry - Bob Marley", "Sweat - Inner Circle", "Bad Boys - Inner Circle"],
+                metal: ["Enter Sandman - Metallica", "Paranoid - Black Sabbath", "The Trooper - Iron Maiden"],
+                folk: ["Blowin' in the Wind - Bob Dylan", "Fast Car - Tracy Chapman", "The Boxer - Simon & Garfunkel"],
+                funk: ["Superstition - Stevie Wonder", "Uptown Funk - Mark Ronson", "Give It Away - Red Hot Chili Peppers"],
+                indie: ["Dog Days Are Over - Florence + The Machine", "Take Me Out - Franz Ferdinand", "Electric Feel - MGMT"],
+                rnb: ["No Scrubs - TLC", "Say My Name - Destinys Child", "Adorn - Miguel"],
+                alternative: ["Creep - Radiohead", "Somebody Told Me - The Killers", "Seven Nation Army - The White Stripes"],
+                edm: ["Wake Me Up - Avicii", "Lean On - Major Lazer", "Stay - Zedd & Alessia Cara"],
+                kpop: ["Butter - BTS", "Kill This Love - BLACKPINK", "Love Scenario - iKON"],
+                punk: ["Basket Case - Green Day", "Blitzkrieg Bop - Ramones", "Should I Stay or Should I Go - The Clash"],
+                lofi: ["Snowman - WYS", "Coffee - Powfu", "Lo-Fi Chill - Various Artists"],
+                gospel: ["Oh Happy Day - Edwin Hawkins", "Take Me to the King - Tamela Mann", "Break Every Chain - Tasha Cobbs"],
+                house: ["One More Time - Daft Punk", "I Remember - Deadmau5", "Greyhound - Swedish House Mafia"],
+                grunge: ["Smells Like Teen Spirit - Nirvana", "Black - Pearl Jam", "Man in the Box - Alice in Chains"],
+                ambient: ["Weightless - Marconi Union", "Echospace - Deepchord", "An Ending (Ascent) - Brian Eno"],
+                soundtrack: ["Imperial March - John Williams", "Time - Hans Zimmer", "Hedwigs Theme - John Williams"]
+            };
+
+            // Populate dropdown dynamically
+            Object.keys(genres).forEach(genre => {
+                let option = document.createElement("option");
+                option.value = genre;
+                option.textContent = genre.charAt(0).toUpperCase() + genre.slice(1);
+                genreDropdown.appendChild(option);
+            });
+
+            // Load last selected genre
+            const lastSelected = localStorage.getItem("selectedGenre");
+            if (lastSelected && genres[lastSelected]) {
+                genreDropdown.value = lastSelected;
+            }
+        });
+
+        function getRecommendation() {
+            const genre = document.getElementById("genre").value;
+            localStorage.setItem("selectedGenre", genre);
+
+            const recommendations = {
+                rock: ["Bohemian Rhapsody - Queen", "Hotel California - Eagles", "Back in Black - AC/DC"],
+                pop: ["Shape of You - Ed Sheeran", "Uptown Funk - Bruno Mars", "As It Was - Harry Styles"],
+                jazz: ["Take Five - Dave Brubeck", "Feeling Good - Nina Simone", "Fly Me to the Moon - Frank Sinatra"],
+                classical: ["Clair de Lune - Debussy", "Symphony No. 5 - Beethoven", "The Four Seasons - Vivaldi"],
+                hiphop: ["God's Plan - Drake", "HUMBLE. - Kendrick Lamar", "Sicko Mode - Travis Scott"],
+                electronic: ["Strobe - Deadmau5", "Titanium - David Guetta", "Animals - Martin Garrix"],
+                blues: ["The Thrill Is Gone - B.B. King", "Sweet Home Chicago - Robert Johnson", "Stormy Monday - T-Bone Walker"],
+                country: ["Jolene - Dolly Parton", "Take Me Home, Country Roads - John Denver", "Tennessee Whiskey - Chris Stapleton"],
+                reggae: ["No Woman, No Cry - Bob Marley", "Sweat - Inner Circle", "Bad Boys - Inner Circle"],
+                metal: ["Enter Sandman - Metallica", "Paranoid - Black Sabbath", "The Trooper - Iron Maiden"],
+                folk: ["Blowin' in the Wind - Bob Dylan", "Fast Car - Tracy Chapman", "The Boxer - Simon & Garfunkel"],
+                funk: ["Superstition - Stevie Wonder", "Uptown Funk - Mark Ronson", "Give It Away - Red Hot Chili Peppers"],
+                indie: ["Dog Days Are Over - Florence + The Machine", "Take Me Out - Franz Ferdinand", "Electric Feel - MGMT"],
+                rnb: ["No Scrubs - TLC", "Say My Name - Destinys Child", "Adorn - Miguel"],
+                alternative: ["Creep - Radiohead", "Somebody Told Me - The Killers", "Seven Nation Army - The White Stripes"],
+                edm: ["Wake Me Up - Avicii", "Lean On - Major Lazer", "Stay - Zedd & Alessia Cara"],
+                kpop: ["Butter - BTS", "Kill This Love - BLACKPINK", "Love Scenario - iKON"],
+                punk: ["Basket Case - Green Day", "Blitzkrieg Bop - Ramones", "Should I Stay or Should I Go - The Clash"],
+                lofi: ["Snowman - WYS", "Coffee - Powfu", "Lo-Fi Chill - Various Artists"],
+                gospel: ["Oh Happy Day - Edwin Hawkins", "Take Me to the King - Tamela Mann", "Break Every Chain - Tasha Cobbs"],
+                house: ["One More Time - Daft Punk", "I Remember - Deadmau5", "Greyhound - Swedish House Mafia"],
+                grunge: ["Smells Like Teen Spirit - Nirvana", "Black - Pearl Jam", "Man in the Box - Alice in Chains"],
+                ambient: ["Weightless - Marconi Union", "Echospace - Deepchord", "An Ending (Ascent) - Brian Eno"],
+                soundtrack: ["Imperial March - John Williams", "Time - Hans Zimmer", "Hedwigs Theme - John Williams"]
+            };
+
+            const randomSongs = recommendations[genre].sort(() => 0.5 - Math.random()).slice(0, 3);
+
+            document.getElementById("recommendation").innerHTML = `
+                <h2>Recommended Songs:</h2>
+                <ul class="fade-in">${randomSongs.map(song => `<li>${song}</li>`).join('')}</ul>
+            `;
+        }
+    </script>
+</body>
+</html>
